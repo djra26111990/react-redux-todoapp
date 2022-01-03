@@ -1,33 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { TodoItem } from "./TodoItem";
 import { ButtonAction } from "./ButtonAction";
 import * as actions from "../redux/actions/actions";
-import { useSelector, useDispatch } from "react-redux";
+import { useStateRedux } from '../hooks/useStateRedux'
+import { useTodosValues } from '../hooks/useTodosValues'
 
 let indexTodo = 0;
 export const TodoList = () => {
-  const [todo, setTodo] = useState({ id: null, todo: "", isComplete: false });
-  const [error, setError] = useState(false);
-  const [loadingData, setLoadingData] = useState(false);
-  const dispatch = useDispatch();
-  const todos = useSelector((store) => store.todos);
+  const { todo, setTodo, error, setError, loadingData } = useTodosValues()
+  const { dispatch, todos } = useStateRedux()
   const addTodoToList = actions.addTodoAction;
   const deleteTodoList = actions.deleteTodoListAction;
-  const getTodoList = actions.getTodosAction;
-
-  useEffect(() => {
-    setLoadingData(true);
-    let savedState = JSON.parse(localStorage.getItem("todos"));
-
-    if (!savedState) {
-      setLoadingData(false);
-      return;
-    } else {
-      dispatch(getTodoList(savedState));
-      setLoadingData(false);
-    }
-  }, [dispatch, getTodoList]);
-
+  
   const handleChange = (e) => {
     setTodo({
       ...todo,
